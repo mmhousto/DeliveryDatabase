@@ -29,7 +29,7 @@ body {
 <center>
 <h1 style="color:red;"><b>Welcome to DDD's Database!</b></h1>
 <p style="color:red;">Here you can compare companies to find the best one for you!</p>
-<h3>Select the Restuarant you are ordering from</h3>
+<h3>Select the Restaurant you are ordering from</h3>
     	<!--The div element for the map -->
     		<div id="map"></div>
 </center>
@@ -55,11 +55,11 @@ body {
 
 	<form action="server.php" method="post">
 		<div class="input-group">
-			<label>Restuarant Name</label>
+			<label>Restaurant Name</label>
 			<input type="text" name="name">
 		</div>
 		<div class="input-group">
-			<label>Restuarant Address</label>
+			<label>Restaurant Address</label>
 			<input type="text" name="raddress">
 		</div>
 		<div class="input-group">
@@ -78,7 +78,7 @@ body {
 	<table>
 		<thead>
 			<tr>
-				<th>Restuarnt Name</th>
+				<th>Restaurant Name</th>
 				<th>Items Price</th>
 				<th>Delivery Fee</th>
 				<th>Service Fee</th>

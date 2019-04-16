@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	$db = mysqli_connect('localhost', 'root', '', 'database');
+	$db = mysqli_connect('192.168.0.20', 'root', '', 'database');
 
 	// initialize variables
 	$name = "";
@@ -22,7 +22,7 @@
 		$Cname = $_POST['Cname'];
 		$total = $_POST['total'];
 
-		$query = "INSERT INTO 'compare' ('Restuarant Name', 'Items Price', 'Delivery Fee', 'Service Fee, 'Time', 'Company Name', 'Total') VALUES ('$name', '$price', '$Dfee', '$Sfee', '$time', '$Cname', '$total')"; 
+		$query = "INSERT INTO 'compare' ('Restaurant Name', 'Items Price', 'Delivery Fee', 'Service Fee, 'Time', 'Company Name', 'Total') VALUES ('$name', '$price', '$Dfee', '$Sfee', '$time', '$Cname', '$total')"; 
 		mysqli_query($db, $query);
 		$_SESSION['message'] = "Address saved"; 
 		header('location: index.php');
