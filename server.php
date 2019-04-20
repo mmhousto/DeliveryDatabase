@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	$db = mysqli_connect('192.168.0.20', 'root', '', 'database');
+	$db = mysqli_connect('192.168.0.16', 'root', '', 'database');
 
 	// initialize variables
 	$name = "";

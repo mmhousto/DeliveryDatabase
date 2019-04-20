@@ -27,9 +27,9 @@ body {
 <?php endif ?>
 
 <center>
-<h1 style="color:red;"><b>Welcome to DDD's Database!</b></h1>
-<p style="color:red;">Here you can compare companies to find the best one for you!</p>
-<h3>Select the Restaurant you are ordering from</h3>
+<h1 style="color:red; border: 5px solid black;"><b>Welcome to DDD's Database!</b></h1>
+<p style="color:red; ">Here you can compare companies to find the best one for you!</p>
+<h3 style="border-bottom-style: dotted; margin: 25px 190px 25px;">Select the Restaurant you are ordering from</h3>
     	<!--The div element for the map -->
     		<div id="map"></div>
 </center>
@@ -41,7 +41,7 @@ body {
   		var tulsa = {lat: 36.042805, lng: -95.888154};
   		// The map, centered at Tulsa
   		var map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 4, 
+			zoom: 12, 
 			center: tulsa
 		});
   		// The marker, positioned at Tulsa
