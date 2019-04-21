@@ -1,5 +1,5 @@
 body {
-	font-size: 19px;
+
 }
 
 table {
@@ -24,6 +24,7 @@ tr:hover {
 }
 
 form {
+	background: #F5F5F5;
 	width: 45%;
 	margin: 50px auto;
 	text-align: left;

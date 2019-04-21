@@ -6,13 +6,11 @@
 <title>Del Delivery Drivers</title>
 <link rel ="stylesheet" type="text/css" href="style.css">
 <style>
+
  #map {
         height: 400px;  /* The height is 400 pixels */
         width: 75%;  /* The width is the width of the web page */
        }
-body {
-	
-}
 </style>
 </head>
 
@@ -27,9 +25,9 @@ body {
 <?php endif ?>
 
 <center>
-<h1 style="color:red; border: 5px solid black;"><b>Welcome to DDD's Database!</b></h1>
-<p style="color:red; ">Here you can compare companies to find the best one for you!</p>
-<h3 style="border-bottom-style: dotted; margin: 25px 190px 25px;">Select the Restaurant you are ordering from</h3>
+<h1 style="color:red;"><b>Welcome to DDD's Database!</b></h1>
+<p style="color:red; margin: -30px 10px 10px;">Here you can compare companies to find the best one for you!</p>
+<h3 style="border-bottom-style: dotted; margin: 25px 190px 25px;">Select the restaurant you are ordering from</h3>
     	<!--The div element for the map -->
     		<div id="map"></div>
 </center>
@@ -60,7 +58,7 @@ body {
 		</div>
 		<div class="input-group">
 			<label>Restaurant Address</label>
-			<input type="text" name="raddress">
+			<input type="text" name="RA">
 		</div>
 		<div class="input-group">
 			<label>Your Address</label>
@@ -71,7 +69,7 @@ body {
 			<input type="text" name="price">
 		</div>
 		<div class="input-group">
-			<button type="submit" name="save" class="btn">Save</button>
+			<button type="submit" name="compare" class="btn">Compare</button>
 		</div>
 	</form>
 
@@ -79,11 +77,10 @@ body {
 		<thead>
 			<tr>
 				<th>Restaurant Name</th>
-				<th>Items Price</th>
+				<th>SubTotal</th>
 				<th>Delivery Fee</th>
 				<th>Service Fee</th>
 				<th>Tip</th>
-				<th>Est. Time</th>
 				<th>Company Name</th>
 				<th>Total Price</th>
 				<th colspan="2">Action</th>
@@ -96,7 +93,6 @@ body {
 				<td>Free</td>
 				<td>$1.06</td>
 				<td>$1.06</td>
-				<td>20 - 25 minutes</td>
 				<td>DoorDash</td>
 				<td>$17.51</td>
 				<td>
