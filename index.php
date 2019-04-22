@@ -2,15 +2,59 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-<title>Del Delivery Drivers</title>
+  <head>
+    <title>Del Delivery Drivers</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
 <link rel ="stylesheet" type="text/css" href="style.css">
-<style>
+    <style>
 
- #map {
-        height: 400px;  /* The height is 400 pixels */
-        width: 75%;  /* The width is the width of the web page */
-       }
+	#map {
+          height: 400px;  /* The height is 400 pixels */
+          width: 75%;  /* The width is the width of the web page */
+	}
+
+	.pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
 </style>
 </head>
 
@@ -45,10 +89,20 @@
   		// The marker, positioned at Tulsa
   		var marker = new google.maps.Marker({position: tulsa, map: map});
 	}
+
+      var request = {
+   	 location: tulsa,
+   	 type: ['restaurant']
+  	};
+
+ 	infowindow = new google.maps.InfoWindow();
+ 	places = new google.maps.places.PlacesService(map);
+	places.nearbySearch(request, callback);
+
 	</script>
 
 	<script async defer
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJUpM9g_PozdAc_G4PW9_C4Y2L87JYsrs&callback=initMap">
+		src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM&callback=initMap">
 	</script>
 
 	<form action="server.php" method="post">
