@@ -1,4 +1,23 @@
-<?php  include('server.php'); ?>
+<?php  include('server.php'); 
+
+// gets record
+		if (isset($_GET['edit'])) {
+		$ID = $_GET['edit'];
+		$update = true;
+		$record = mysqli_query($db, "SELECT o.ID, r.name, o.subTotal, o.RA, o.address
+						FROM orders o
+						INNER JOIN restaurant r ON o.ID = r.OID
+						INNER JOIN company c ON o.ID = c.OID
+						WHERE ID=$ID");
+		$n = mysqli_fetch_array($record);
+		$name = $n['name'];
+		$price = $n['subTotal'];
+		$RA = $n['RA'];
+		$address = $n['address'];
+		$ID = $n['ID'];
+	}
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -79,7 +98,7 @@
     	<script>
 		// Initialize and add the map
 	function initMap() {
-  		// The location of Uluru
+  		// The location of Tulsa
   		var tulsa = {lat: 36.042805, lng: -95.888154};
   		// The map, centered at Tulsa
   		var map = new google.maps.Map(document.getElementById('map'), {
@@ -105,33 +124,13 @@
 		src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM&callback=initMap">
 	</script>
 
-	<form action="server.php" method="post">
-		<div class="input-group">
-			<label>Restaurant Name</label>
-			<input type="text" name="name">
-		</div>
-		<div class="input-group">
-			<label>Restaurant Address</label>
-			<input type="text" name="RA">
-		</div>
-		<div class="input-group">
-			<label>Your Address</label>
-			<input type="text" name="address">
-		</div>
-		<div class="input-group">
-			<label>Order Subtotal</label>
-			<input type="text" name="price">
-		</div>
-		<div class="input-group">
-			<button type="submit" name="compare" class="btn">Compare</button>
-		</div>
-	</form>
-
 	<table>
 		<thead>
-			<tr>
+			<tr>	
+				<th>Order ID</th>
 				<th>Restaurant Name</th>
 				<th>SubTotal</th>
+				<th>Distance</th>
 				<th>Delivery Fee</th>
 				<th>Service Fee</th>
 				<th>Tip</th>
@@ -141,23 +140,60 @@
 			</tr>
 		</thead>
 		<tbody>
+			<?php while ($row = mysqli_fetch_array($result)) { ?>
 			<tr>
-				<td>On the Border</td>
-				<td>$15.39</td>
-				<td>Free</td>
-				<td>$1.06</td>
-				<td>$1.06</td>
-				<td>DoorDash</td>
-				<td>$17.51</td>
+				<td><?php echo $row['ID']; ?></td>
+				<td><?php echo $row['name']; ?></td>
+				<td>$<?php echo $row['subTotal']; ?></td>
+				<td><?php echo $row['distance']; ?></td>
+				<td>$<?php echo $row['dFee']; ?></td>
+				<td>$<?php echo $row['sFee']; ?></td>
+				<td>$<?php echo $row['tip']; ?></td>
+				<td><?php echo $row['CN']; ?></td>
+				<td>$<?php echo $row['total']; ?></td>
 				<td>
-					<a href="#">Edit</a>
+					<a href="index.php?edit=<?php echo $row['ID']; ?>" class="edit_btn">Edit</a>
 				</td>
 				<td>
-					<a href="#">Delete</a>
+					<a href="index.php?del=<?php echo $row['ID']; ?>" class="del_btn">Delete</a>
 				</td>
 			</tr>
+			<?php } ?>
 		</tbody>
 	</table>
+
+	<form action="server.php" method="post">
+	<input type="hidden" name="ID" value="<?php echo $ID; ?>">
+
+		<div class="input-group">
+			<label>Restaurant Name</label>
+			<input type="text" name="name" value="<?php echo $name; ?>">
+		</div>
+
+		<div class="input-group">
+			<label>Restaurant Address</label>
+			<input type="text" name="RA" value="<?php echo $RA; ?>">
+		</div>
+
+		<div class="input-group">
+			<label>Your Address</label>
+			<input type="text" name="address" value="<?php echo $address; ?>">
+		</div>
+
+		<div class="input-group">
+			<label>Order Subtotal</label>
+			<input type="text" name="price" value="<?php echo $price; ?>">
+		</div>
+
+		<div class="input-group">
+		<?php if ($update == false): ?>
+			<button type="submit" name="compare" class="btn">Compare</button>
+		<?php else: ?>
+			<button type="submit" name="update" class="btn">Update</button>
+		<?php endif ?>
+		</div>
+
+	</form>
 
 </body>
 </html>

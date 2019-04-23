@@ -1,4 +1,17 @@
 <?php
+/**
+ * @function getDistance()
+ * Calculates the distance between two address
+ * 
+ * @params
+ * $addressFrom - Starting point
+ * $addressTo - End point
+ * $unit - Unit type
+ * 
+ * @author CodexWorld
+ * @url https://www.codexworld.com
+ *
+ */
 
 function getDistance($addressFrom, $addressTo, $unit = ''){
 	$apikey = 'AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM';
