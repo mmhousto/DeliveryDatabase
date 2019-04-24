@@ -124,18 +124,18 @@
 		src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM&callback=initMap">
 	</script>
 
-	<table>
+	<table id="myTable2">
 		<thead>
 			<tr>	
-				<th>Order ID</th>
-				<th>Restaurant Name</th>
-				<th>SubTotal</th>
-				<th>Distance</th>
-				<th>Delivery Fee</th>
-				<th>Service Fee</th>
-				<th>Tip</th>
-				<th>Company Name</th>
-				<th>Total Price</th>
+				<th onclick="sortTable(0)">Order ID</th>
+				<th onclick="sortTable(1)">Restaurant Name</th>
+				<th onclick="sortTable(2)">SubTotal</th>
+				<th onclick="sortTable(3)">Distance</th>
+				<th onclick="sortTable(4)">Delivery Fee</th>
+				<th onclick="sortTable(5)">Service Fee</th>
+				<th onclick="sortTable(6)">Tip</th>
+				<th onclick="sortTable(7)">Company Name</th>
+				<th onclick="sortTable(8)">Total Price</th>
 				<th colspan="2">Action</th>
 			</tr>
 		</thead>
@@ -152,15 +152,72 @@
 				<td><?php echo $row['CN']; ?></td>
 				<td>$<?php echo $row['total']; ?></td>
 				<td>
-					<a href="index.php?edit=<?php echo $row['ID']; ?>" class="edit_btn">Edit</a>
+					<a class="edit_btn" href="index.php?edit=<?php echo $row['ID']; ?>">Edit</a>
 				</td>
 				<td>
-					<a href="index.php?del=<?php echo $row['ID']; ?>" class="del_btn">Delete</a>
+					<a class="del_btn" href="server.php?del=<?php echo $row['ID']; ?>">Delete</a>
 				</td>
 			</tr>
 			<?php } ?>
 		</tbody>
 	</table>
+
+<script>
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable2");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc"; 
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++; 
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
 
 	<form action="server.php" method="post">
 	<input type="hidden" name="ID" value="<?php echo $ID; ?>">

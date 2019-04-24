@@ -189,9 +189,15 @@ include 'get_Distance.php';
 
 	// delete records
 	if (isset($_GET['del'])) {
-	    $ID = $_GET['ID'];
-	    mysqli_query($db, "DELETE * FROM orders
-		WHERE ID = $ID");
+	    $ID = $_GET['del'];
+
+	    mysqli_query($db, "DELETE FROM orders
+		WHERE ID = '$ID'");
+	    mysqli_query($db, "DELETE FROM company
+		WHERE OID = '$ID'");
+	    mysqli_query($db, "DELETE FROM restaurant
+		WHERE OID = '$ID'");
+
 	    $_SESSION['message'] = "Order deleted!"; 
 	    header('location: index.php');
 	}
