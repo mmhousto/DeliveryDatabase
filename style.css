@@ -20,7 +20,7 @@ th, td {
 }
 
 tr:hover {
-	background: #F5F5F5;
+	background: #0066ff;
 }
 
 form {
@@ -49,14 +49,7 @@ form {
     border-radius: 5px;
     border: 1px solid gray;
 }
-.btn {
-    padding: 10px;
-    font-size: 15px;
-    color: white;
-    background: #5F9EA0;
-    border: none;
-    border-radius: 5px;
-}
+
 .edit_btn {
     text-decoration: none;
     padding: 2px 5px;

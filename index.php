@@ -3,8 +3,9 @@
 // gets record
 		if (isset($_GET['edit'])) {
 		$ID = $_GET['edit'];
+    $total = $_GET['edit'];
 		$update = true;
-		$record = mysqli_query($db, "SELECT o.ID, r.name, o.subTotal, o.RA, o.address
+		$record = mysqli_query($db, "SELECT o.ID, r.name, o.subTotal, r.RA, o.address
 						FROM orders o
 						INNER JOIN restaurant r ON o.ID = r.OID
 						INNER JOIN company c ON o.ID = c.OID
@@ -26,13 +27,42 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 <link rel ="stylesheet" type="text/css" href="style.css">
-    <style>
 
-	#map {
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+
+    <style>
+	    #map {
           height: 400px;  /* The height is 400 pixels */
           width: 75%;  /* The width is the width of the web page */
-	}
+	    }
+      #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+      }
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+      #infowindow-content {
+        display: none;
+      }
+      #map #infowindow-content {
+        display: inline;
+      }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      tr:hover {
+        background: #0066ff;
+      }
+      body {
+        background-color: #ffff66;
+      }
+    </style>
 
+    <style>
 	.pac-card {
         margin: 10px 10px 0 0;
         border-radius: 2px 0 0 2px;
@@ -43,23 +73,19 @@
         background-color: #fff;
         font-family: Roboto;
       }
-
       #pac-container {
         padding-bottom: 12px;
         margin-right: 12px;
       }
-
       .pac-controls {
         display: inline-block;
         padding: 5px 11px;
       }
-
       .pac-controls label {
         font-family: Roboto;
         font-size: 13px;
         font-weight: 300;
       }
-
       #pac-input {
         background-color: #fff;
         font-family: Roboto;
@@ -70,10 +96,139 @@
         text-overflow: ellipsis;
         width: 400px;
       }
-
       #pac-input:focus {
         border-color: #4d90fe;
       }
+      #type-selector {
+	      width: 401px;
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+#locationField, #controls {
+        position: relative;
+        width: 480px;
+      }
+      #autocomplete {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 99%;
+      }
+      .label {
+        text-align: right;
+        font-weight: bold;
+        width: 100px;
+        color: #303030;
+        font-family: "Roboto";
+      }
+      #address {
+        border: 1px solid #000090;
+        background-color: #f0f9ff;
+        width: 480px;
+        padding-right: 2px;
+      }
+      #address td {
+        font-size: 10pt;
+      }
+      .field {
+        width: 99%;
+      }
+      .slimField {
+        width: 80px;
+      }
+      .wideField {
+        width: 200px;
+      }
+      #locationField {
+        height: 20px;
+        margin-bottom: 2px;
+      }
+      #cbtn { 
+        display: flex; 
+        justify-content: center; 
+      }
+      #cform {
+        width: 125px;
+        height: 32px;
+      }
+      .btn {
+         padding: 10px;
+         font-size: 16px;
+         color: white;
+         background: #0066ff;
+         border: none;
+         border-radius: 5px;
+      }
+      .cbtn {
+        margin-top: -26px;
+        font-size: 32px;
+        padding: 12px;
+        color: white;
+        background: #0066ff;
+        border: none;
+        border-radius: 16px;
+      }
+
+.input-group {
+    margin: 10px 0px 10px 0px;
+}
+.input-group label {
+    display: block;
+    text-align: left;
+    margin: 3px;
+}
+.input-group input {
+    height: 30px;
+    width: 93%;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.edit_btn {
+    text-decoration: none;
+    padding: 2px 5px;
+    background: #2E8B57;
+    color: white;
+    border-radius: 3px;
+}
+
+.del_btn {
+    text-decoration: none;
+    padding: 2px 5px;
+    color: white;
+    border-radius: 3px;
+    background: #800000;
+}
+
+.msg {
+    margin: 30px auto; 
+    padding: 10px; 
+    border-radius: 5px; 
+    color: #3c763d; 
+    background: #dff0d8; 
+    border: 1px solid #3c763d;
+    width: 50%;
+    text-align: center;
+}
+
 </style>
 </head>
 
@@ -88,40 +243,160 @@
 <?php endif ?>
 
 <center>
-<h1 style="color:red;"><b>Welcome to DDD's Database!</b></h1>
-<p style="color:red; margin: -30px 10px 10px;">Here you can compare companies to find the best one for you!</p>
-<h3 style="border-bottom-style: dotted; margin: 25px 190px 25px;">Select the restaurant you are ordering from</h3>
-    	<!--The div element for the map -->
-    		<div id="map"></div>
+<h1 style="color:black;"><b><font size="+7">Welcome to DDD's Database!</font></b></h1>
+<p style="color:black; margin: -30px 10px 10px;"><font size="+2">Here you can compare companies to find the best one for you!</font></p>
+<h3 style="border-bottom-style: dotted; margin: 25px 190px 25px;"><font size="+2">Use the map to find restaurants and their addresses</font></h3>
+
+<input id="pac-input" class="controls" type="text" placeholder="Enter a Restaurant">
+<div id="map"></div>
+    <div id="infowindow-content">
+      <img id="place-icon" src="" height="16" width="16">
+      <span id="place-name"  class="title"></span><br>
+      <span id="place-address"></span>
+    </div>
+
 </center>
 
     	<script>
+
 		// Initialize and add the map
-	function initMap() {
+function initMap() {
+
   		// The location of Tulsa
   		var tulsa = {lat: 36.042805, lng: -95.888154};
   		// The map, centered at Tulsa
+      var infowindow = new google.maps.InfoWindow();
   		var map = new google.maps.Map(document.getElementById('map'), {
 			zoom: 12, 
 			center: tulsa
 		});
   		// The marker, positioned at Tulsa
   		var marker = new google.maps.Marker({position: tulsa, map: map});
-	}
+	        var clickHandler = new ClickEventHandler(map, tulsa);
 
       var request = {
    	 location: tulsa,
    	 type: ['restaurant']
   	};
+//=================================================================================//
+//search box creates markers for restaurant
+ 	// Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
- 	infowindow = new google.maps.InfoWindow();
- 	places = new google.maps.places.PlacesService(map);
-	places.nearbySearch(request, callback);
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            google.maps.event.addListener(markers, 'click', function() {
+              infowindow.setContent(title, position);
+              infowindow.open(map,marker);
+            });
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+}
+//===============================================================================================//
+//autocomplete restaurant search
+
+//===========================================================================================//
+      /**
+       * @constructor
+       */
+      var ClickEventHandler = function(map, origin) {
+        this.origin = origin;
+        this.map = map;
+        this.placesService = new google.maps.places.PlacesService(map);
+        this.infowindow = new google.maps.InfoWindow;
+        this.infowindowContent = document.getElementById('infowindow-content');
+        this.infowindow.setContent(this.infowindowContent);
+
+        // Listen for clicks on the map.
+        this.map.addListener('click', this.handleClick.bind(this));
+      };
+
+      ClickEventHandler.prototype.handleClick = function(event) {
+        console.log('You clicked on: ' + event.latLng);
+        // If the event has a placeId, use it.
+        if (event.placeId) {
+          console.log('You clicked on place:' + event.marker);
+
+          // Calling e.stop() on the event prevents the default info window from
+          // showing.
+          // If you call stop here when there is no placeId you will prevent some
+          // other map click event handlers from receiving the event.
+          event.stop();
+          this.getPlaceInformation(event.placeId);
+        }
+      };
+
+      ClickEventHandler.prototype.getPlaceInformation = function(placeId) {
+        var me = this;
+        this.placesService.getDetails({placeId: placeId}, function(place, status) {
+          if (status === 'OK') {
+            me.infowindow.close();
+            me.infowindow.setPosition(place.geometry.location);
+            me.infowindowContent.children['place-icon'].src = place.icon;
+            me.infowindowContent.children['place-name'].textContent = place.name;
+            me.infowindowContent.children['place-address'].textContent =
+                place.formatted_address;
+            me.infowindow.open(me.map);
+          }
+        });
+      };
 
 	</script>
 
 	<script async defer
-		src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM&callback=initMap">
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFPv2utTeUTL9ST4IGY0RRv7cCJiZHSFM&libraries=places&callback=initMap">
 	</script>
 
 	<table id="myTable2">
@@ -163,6 +438,7 @@
 	</table>
 
 <script>
+
 function sortTable(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
   table = document.getElementById("myTable2");
@@ -224,12 +500,12 @@ function sortTable(n) {
 
 		<div class="input-group">
 			<label>Restaurant Name</label>
-			<input type="text" name="name" value="<?php echo $name; ?>">
+			<input id="RN" type="text" name="name" value="<?php echo $name; ?>">
 		</div>
 
 		<div class="input-group">
-			<label>Restaurant Address</label>
-			<input type="text" name="RA" value="<?php echo $RA; ?>">
+			<label>Restaurant Address (Address Format: Street, City, State, Country)</label>
+			<input id="RA" type="text" name="RA" value="<?php echo $RA; ?>">
 		</div>
 
 		<div class="input-group">
@@ -244,7 +520,7 @@ function sortTable(n) {
 
 		<div class="input-group">
 		<?php if ($update == false): ?>
-			<button type="submit" name="compare" class="btn">Compare</button>
+			<button type="submit" name="submit" class="btn">Submit</button>
 		<?php else: ?>
 			<button type="submit" name="update" class="btn">Update</button>
 		<?php endif ?>
@@ -252,5 +528,9 @@ function sortTable(n) {
 
 	</form>
 
+
+<center><form action="server.php" method="post" id="cform"><div class="input-group" id="cbtn">
+    <button type="submit" name="compare" class="cbtn">Compare</button>
+  </div></form></center>
 </body>
 </html>
