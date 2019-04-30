@@ -187,26 +187,33 @@ if (isset($_POST['compare'])) {
     INNER JOIN restaurant r ON o.ID = r.OID
     INNER JOIN company c ON o.ID = c.OID
     WHERE c.CN = 'Door Dash'";
+    $ddavg = mysqli_query($db, $dd);
+    $row1 = mysqli_fetch_assoc($ddavg);
+    $DDAvg = $row1['ddavg'];
     $gh = "SELECT AVG(o.total) AS ghavg
     FROM orders o
     INNER JOIN restaurant r ON o.ID = r.OID
     INNER JOIN company c ON o.ID = c.OID
     WHERE c.CN = 'Grub Hub'";
+    $ghavg = mysqli_query($db, $gh);
+    $row2 = mysqli_fetch_assoc($ghavg);
+    $GHAvg = $row2['ghavg'];
     $ue = "SELECT AVG(o.total) AS ueavg
     FROM orders o
     INNER JOIN restaurant r ON o.ID = r.OID
     INNER JOIN company c ON o.ID = c.OID
     WHERE c.CN = 'Uber Eats'";
+    $ueavg = mysqli_query($db, $ue);
+    $row3 = mysqli_fetch_assoc($ueavg);
+    $UEAvg = $row3['ueavg'];
 
-    if($dd < $gh AND $dd < $ue) {
+    if($DDAvg < $GHAvg AND $DDAvg < $UEAvg) {
     	$_SESSION['message'] = "Door Dash is usually cheapest for you!"; 
     	header('location: index.php');
-    }
-    if ($gh < $dd AND $gh < $ue) {
+    }else if ($GHAvg < $DDAvg AND $GHAvg < $UEAvg) {
    	 	$_SESSION['message'] = "Grub Hub is usually cheapest for you!"; 
     	header('location: index.php');
-    }
-    if ($ue < $dd AND $ue < $gh) {
+    }else if ($UEAvg < $DDAvg AND $UEAvg < $GHAvg) {
     	$_SESSION['message'] = "Uber Eats is usually cheapest for you!"; 
     	header('location: index.php');    
     }

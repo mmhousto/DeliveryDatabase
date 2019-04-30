@@ -329,11 +329,6 @@ function initMap() {
               position: place.geometry.location
             }));
 
-            google.maps.event.addListener(markers, 'click', function() {
-              infowindow.setContent(title, position);
-              infowindow.open(map,marker);
-            });
-
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
               bounds.union(place.geometry.viewport);
