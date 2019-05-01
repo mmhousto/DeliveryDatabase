@@ -267,19 +267,44 @@ function initMap() {
   		// The location of Tulsa
   		var tulsa = {lat: 36.042805, lng: -95.888154};
   		// The map, centered at Tulsa
-      var infowindow = new google.maps.InfoWindow();
+      var infoWindow = new google.maps.InfoWindow();
   		var map = new google.maps.Map(document.getElementById('map'), {
 			zoom: 12, 
 			center: tulsa
 		});
-  		// The marker, positioned at Tulsa
-  		var marker = new google.maps.Marker({position: tulsa, map: map});
-	        var clickHandler = new ClickEventHandler(map, tulsa);
 
-      var request = {
-   	 location: tulsa,
-   	 type: ['restaurant']
-  	};
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var YA = document.getElementById('address');
+            var geocoder = geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': pos }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            var Yaddress = results[1].formatted_address;
+                            YA.value = Yaddress;
+                        }
+                    }
+                });
+
+            var marker = new google.maps.Marker({position: pos, map: map});
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Your Location');
+            infoWindow.open(map);
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+
+
+	   var clickHandler = new ClickEventHandler(map, tulsa);
 //=================================================================================//
 //search box creates markers for restaurant
  	// Create the search box and link it to the UI element.
@@ -340,6 +365,15 @@ function initMap() {
           });
           map.fitBounds(bounds);
         });
+
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
 }
 //===============================================================================================//
 //autocomplete restaurant search
@@ -507,7 +541,7 @@ function sortTable(n) {
 
 		<div class="input-group">
 			<label>Your Address</label>
-			<input type="text" name="address" value="<?php echo $address; ?>">
+			<input id="address" type="text" name="address" value="<?php echo $address; ?>">
 		</div>
 
 		<div class="input-group">

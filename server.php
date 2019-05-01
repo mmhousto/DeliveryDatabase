@@ -51,7 +51,8 @@ include 'get_Distance.php';
 		if($price < 10.00){
 		$Sfee1 = $Sfee1 + 2.00;
 		$Sfee3 = $Sfee3 + 2.00;
-		} else if($price <5.00){
+		}
+		if($price < 5.00){
 		$Dfee2 = $Dfee2 + 2.00;
 		}	
 
