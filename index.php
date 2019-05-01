@@ -166,6 +166,8 @@
       #cform {
         width: 125px;
         height: 32px;
+        background: transparent;
+        border: none;
       }
       .btn {
          padding: 10px;
