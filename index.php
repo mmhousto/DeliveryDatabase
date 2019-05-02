@@ -267,47 +267,22 @@ function initMap() {
   		// The location of Tulsa
   		var tulsa = {lat: 36.042805, lng: -95.888154};
   		// The map, centered at Tulsa
-      var infoWindow = new google.maps.InfoWindow();
   		var map = new google.maps.Map(document.getElementById('map'), {
 			zoom: 12, 
 			center: tulsa
 		});
 
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            var YA = document.getElementById('address');
-            var geocoder = geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'latLng': pos }, function (results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        if (results[1]) {
-                            var Yaddress = results[1].formatted_address;
-                            YA.value = Yaddress;
-                        }
-                    }
-                });
-
-            var marker = new google.maps.Marker({position: pos, map: map});
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Your Location');
-            infoWindow.open(map);
-            map.setCenter(pos);
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-        }
+      sA(map);
+      setMarkers(map);
 
 
 	   var clickHandler = new ClickEventHandler(map, tulsa);
+}
 //=================================================================================//
 //search box creates markers for restaurant
  	// Create the search box and link it to the UI element.
+function setMarkers(map) {
+        var infowindow = new google.maps.InfoWindow();
         var input = document.getElementById('pac-input');
         var searchBox = new google.maps.places.SearchBox(input);
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -349,12 +324,36 @@ function initMap() {
             };
 
             // Create a marker for each place.
-            markers.push(new google.maps.Marker({
+          for (let i = 0; i < places.length; i++) {
+            let marker = new google.maps.Marker({
               map: map,
               icon: icon,
               title: place.name,
               position: place.geometry.location
-            }));
+            });
+
+            marker.addListener('click', (function(marker, i) {
+              return function() {
+                var RN = document.getElementById('RN');         
+                var RA = document.getElementById('RA');
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                 if (status == google.maps.GeocoderStatus.OK) {
+                      if (results[1]) {
+                          var Raddress = results[1].formatted_address;
+                         RA.value = Raddress;
+                      }
+                  }
+                });
+                RN.value = marker.title;
+                infowindow.setContent('Name: ' + marker.title + '<br>Address: ' + RA.value);
+                infowindow.open(map, marker);
+              }
+            })(marker, i));
+            bounds.extend(marker.getPosition());
+            markers.push(marker);
+          }
+
 
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
@@ -365,6 +364,43 @@ function initMap() {
           });
           map.fitBounds(bounds);
         });
+}
+
+function sA(map) {
+        var infoWindow = new google.maps.InfoWindow();
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var YA = document.getElementById('address');
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': pos }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            var Yaddress = results[1].formatted_address;
+                            YA.value = Yaddress;
+                        }
+                    }
+                });
+
+            var marker = new google.maps.Marker({position: pos, map: map});
+            marker.addListener('click', function() {
+              map.setZoom(14);
+              map.setCenter(marker.getPosition());
+            });
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Your Location');
+            infoWindow.open(map);
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
 
 }
 
@@ -379,50 +415,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 //autocomplete restaurant search
 
 //===========================================================================================//
-      /**
-       * @constructor
-       */
-      var ClickEventHandler = function(map, origin) {
-        this.origin = origin;
-        this.map = map;
-        this.placesService = new google.maps.places.PlacesService(map);
-        this.infowindow = new google.maps.InfoWindow;
-        this.infowindowContent = document.getElementById('infowindow-content');
-        this.infowindow.setContent(this.infowindowContent);
 
-        // Listen for clicks on the map.
-        this.map.addListener('click', this.handleClick.bind(this));
-      };
-
-      ClickEventHandler.prototype.handleClick = function(event) {
-        console.log('You clicked on: ' + event.latLng);
-        // If the event has a placeId, use it.
-        if (event.placeId) {
-          console.log('You clicked on place:' + event.marker);
-
-          // Calling e.stop() on the event prevents the default info window from
-          // showing.
-          // If you call stop here when there is no placeId you will prevent some
-          // other map click event handlers from receiving the event.
-          event.stop();
-          this.getPlaceInformation(event.placeId);
-        }
-      };
-
-      ClickEventHandler.prototype.getPlaceInformation = function(placeId) {
-        var me = this;
-        this.placesService.getDetails({placeId: placeId}, function(place, status) {
-          if (status === 'OK') {
-            me.infowindow.close();
-            me.infowindow.setPosition(place.geometry.location);
-            me.infowindowContent.children['place-icon'].src = place.icon;
-            me.infowindowContent.children['place-name'].textContent = place.name;
-            me.infowindowContent.children['place-address'].textContent =
-                place.formatted_address;
-            me.infowindow.open(me.map);
-          }
-        });
-      };
 
 	</script>
 
@@ -535,7 +528,7 @@ function sortTable(n) {
 		</div>
 
 		<div class="input-group">
-			<label>Restaurant Address (Address Format: Street, City, State, Country)</label>
+			<label>Restaurant Address (Address Format: Street, City, State Zip, Country)</label>
 			<input id="RA" type="text" name="RA" value="<?php echo $RA; ?>">
 		</div>
 

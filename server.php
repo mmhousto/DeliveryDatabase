@@ -33,6 +33,7 @@ include 'get_Distance.php';
 	// if submit button clicked
 	if (isset($_POST['submit'])) {
 		$name = $_POST['name'];
+		$name = filter_var($name, FILTER_SANITIZE_STRING);
 		$price = $_POST['price'];
 		$RA = $_POST['RA'];
 		$address = $_POST['address'];
@@ -98,6 +99,7 @@ $query1 = "INSERT INTO orders (subTotal, address, distance, total)
 	// update records
 	if (isset($_POST['update'])) {
 		$name = $_POST['name'];
+		$name = filter_var($name, FILTER_SANITIZE_STRING);
 		$address = $_POST['address'];
 		$price = $_POST['price'];
 		$RA = $_POST['RA'];
